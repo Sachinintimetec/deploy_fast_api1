@@ -1,1 +1,4 @@
 fastapi[all]
+uvicorn
+python-multipart==0.0.5  # For handling file uploads in multipart/form-data format
+faker==18.6.0            # For generating mock data
