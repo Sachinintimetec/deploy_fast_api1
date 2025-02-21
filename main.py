@@ -6,6 +6,8 @@ from fastapi import FastAPI, File, UploadFile, HTTPException,Body,Request
 from pydantic import BaseModel
 from mock_data_generator import generate_w9_mock_data  # Import the mock data generation function
 from fastapi.middleware.cors import CORSMiddleware
+import json
+import asyncio
 
 app = FastAPI()
 
@@ -38,7 +40,12 @@ async def root():
 @app.post("/upload-form/")
 async def upload_form(request: Request):
     try:
-        body = await request.body()
+        body_bytes = await request.body()
+        body_str = body_bytes.decode("utf-8")  # Bytes ko string me convert karein
+        body = json.loads(body_str) 
+        delay = body.get("time", 0)
+        if delay > 0:
+            await asyncio.sleep(delay)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"File upload failed: {str(e)}")
     mock_data = generate_w9_mock_data()
